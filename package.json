@@ -1,0 +1,19 @@
+{
+  "name": "boom-finance-backend",
+  "version": "1.0.0",
+  "description": "Personal-use backend for Boom Finance: Open Banking connection + AI Coach proxy. Designed for one person to deploy one copy of this for themselves.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "dotenv": "^16.4.5",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
