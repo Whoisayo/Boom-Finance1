@@ -1,6 +1,12 @@
+// routes/bank.js
+//
+// ⚠️ See services/bankService.js for the full honesty note — none of this
+// has been tested against the real Enable Banking API.
+
 const express = require('express');
 const router = express.Router();
 const bankService = require('../services/bankService');
+const syncService = require('../services/syncService');
 const { readState, writeState } = require('../services/store');
 
 router.get('/status', (req, res) => {
@@ -34,6 +40,7 @@ router.post('/connect', async (req, res) => {
   }
 });
 
+// The bank redirects the user's browser back here after they authenticate.
 router.get('/callback', async (req, res) => {
   const { code } = req.query;
   if (!code) {
@@ -47,9 +54,25 @@ router.get('/callback', async (req, res) => {
       session: session
     };
     writeState(state);
-    res.send('Bank connected. You can close this window and return to the app.');
+
+    try {
+      await syncService.syncAllConnectedAccounts();
+    } catch (syncErr) {
+      console.error('Initial sync after connect failed:', syncErr.message);
+    }
+
+    res.send('Bank connected and synced. You can close this window and return to the app.');
   } catch (err) {
     res.status(500).send('Connection failed: ' + err.message);
+  }
+});
+
+router.post('/sync', async (req, res) => {
+  try {
+    const result = await syncService.syncAllConnectedAccounts();
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
