@@ -1,36 +1,26 @@
+// services/store.js
+//
+// Deliberately simple: a single JSON file on disk, read/written synchronously.
+// This is the right amount of engineering for ONE person's personal finance
+// data — no database server to run, back up, or secure separately. If this
+// were ever serving multiple people, this would need to become a real
+// database with proper access control; for the "each person deploys their
+// own copy" model, a flat file is honest and sufficient.
+
 const fs = require('fs');
 const path = require('path');
 
 const DATA_FILE = path.join(__dirname, '..', 'data', 'store.json');
 
 const DEFAULT_STATE = {
-  cash: [
-    { id: 'cash-current', name: 'Current account', amount: 1850 },
-    { id: 'cash-pot', name: 'Savings pot', amount: 490 }
-  ],
-  debt: [
-    { id: 'debt-cc', name: 'Credit card', amount: 1240, log: [] }
-  ],
-  investments: [
-    { id: 'stocks', name: 'Stocks', amount: 1551, log: [] },
-    { id: 'property', name: 'Property', amount: 530, log: [] },
-    { id: 'bond', name: 'Bond', amount: 795, log: [] }
-  ],
-  goals: {
-    'emergency-fund': { name: 'Emergency Fund', icon: 'umbrellaIcon', iconBg: 'var(--teal-tint)', iconColor: 'var(--teal-dark)', target: 10000, date: 'Dec 2027', saved: 2500, contribution: 150, pillClass: 'pill-teal', barColor: 'var(--teal)', log: [] },
-    'portugal-trip':  { name: 'Portugal Trip',  icon: 'planeIcon',    iconBg: 'var(--amber-tint)', iconColor: 'var(--amber)',    target: 1800,  date: 'Jun 2027', saved: 860,  contribution: 90,  pillClass: 'pill-amber', barColor: 'var(--amber)', log: [] },
-    'house-deposit':  { name: 'House Deposit',  icon: 'keyIcon',      iconBg: 'var(--teal-tint)', iconColor: 'var(--teal-dark)', target: 25000, date: '2030',     saved: 2250, contribution: 200, pillClass: 'pill-teal', barColor: 'var(--teal)', log: [] }
-  },
+  cash: [],
+  debt: [],
+  investments: [],
+  goals: {},
   budget: {
-    monthlyIncome: 3200,
-    cycleStartDay: 26,
-    categories: [
-      { key: 'groceries', name: 'Groceries', limit: 500 },
-      { key: 'dining', name: 'Dining out', limit: 200 },
-      { key: 'subscriptions', name: 'Subscriptions', limit: 50 },
-      { key: 'transport', name: 'Transport', limit: 150 },
-      { key: 'bills', name: 'Bills & utilities', limit: 1200 }
-    ]
+    monthlyIncome: 0,
+    cycleStartDay: 1,
+    categories: []
   },
   transactions: [],
   bankConnection: null
